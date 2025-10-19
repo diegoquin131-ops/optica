@@ -27,17 +27,14 @@
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
     
-    /* --- CSS para Fórmulas --- */
-    
-    /* ===== CAMBIO AQUÍ ===== */
+    /* --- CSS para Fórmulas y Explicaciones --- */
     #formulas {
-      background: #08101a; /* Fondo oscuro, igual que los controles */
-      border: 1px solid var(--accent); /* Borde de acento */
+      background: #08101a; 
+      border: 1px solid var(--accent); 
     }
-    /* ======================= */
 
     .formula-display{
-      background:rgba(0,0,0,0.25); /* Este es el fondo de la fórmula en sí */
+      background:rgba(0,0,0,0.25);
       padding:16px;
       border-radius:8px;
       font-family:monospace;
@@ -50,13 +47,31 @@
       color: var(--accent2);
       font-size: 20px;
     }
-    .case-description {
+    
+    /* Estilos para el texto de explicación */
+    .explicacion-subtitulo {
+        font-size: 14px; 
+        color: var(--muted); 
+        margin-left: 4px; 
+        display: block; 
+        margin-top: 20px; /* Añade espacio antes de cada subtítulo */
+        margin-bottom: 8px;
+        border-top: 1px solid var(--glass); /* Línea separadora */
+        padding-top: 16px;
+    }
+    .explicacion-texto {
         font-size: 13px;
         color: var(--muted);
-        margin-bottom: 8px;
+        margin-bottom: 12px;
+        line-height: 1.5;
     }
-    .case-description strong {
-        color: var(--accent); 
+    /* Para resaltar las variables en las explicaciones */
+    .explicacion-texto code {
+        color: var(--accent2);
+        background: rgba(0,0,0,0.2);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-family: monospace;
     }
 
     footer{text-align:center;color:var(--muted);margin-top:12px}
@@ -115,25 +130,54 @@
       </div>
 
       <div class="panel" id="formulas">
-        <h4>Fórmula y Ejemplos</h4>
+        <h4>Fórmulas, Casos y Controles</h4>
         
         <div class="formula-display">
           1/<strong>f</strong> = 1/<strong>d<sub>o</sub></strong> + 1/<strong>d<sub>i</sub></strong>
         </div>
         
-        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px; display: block; margin-bottom: 8px;">Casos Principales:</strong>
+        <strong class="explicacion-subtitulo">Explicación de las Fórmulas</strong>
         
-        <p class="case-description">
+        <p class="explicacion-texto">
+          <strong>Ecuación de Lentes:</strong> <code>1/f = 1/d_o + 1/d_i</code><br>
+          Relaciona la distancia focal (<code>f</code>), la distancia del objeto (<code>d_o</code>) y la distancia de la imagen (<code>d_i</code>).
+        </p>
+        <p class="explicacion-texto">
+          <strong>Aumento (A):</strong> <code>A = -d_i / d_o</code><br>
+          Calcula el tamaño y la orientación de la imagen. Si <code>A</code> es negativo, la imagen está invertida. Si <code>A</code> es positivo, está derecha.
+        </p>
+
+        <strong class="explicacion-subtitulo">Casos Principales</strong>
+        
+        <p class="explicacion-texto">
           <strong>Lente Convergente (d<sub>o</sub> > f):</strong><br>
-          Se forma una imagen **real**, **invertida** y su tamaño depende de la distancia del objeto.
+          El objeto está fuera del foco. Produce una imagen <strong>Real</strong> e <strong>Invertida</strong> (como un proyector).
         </p>
-        <p class="case-description">
+        <p class="explicacion-texto">
           <strong>Lente Convergente (d<sub>o</sub> < f):</strong><br>
-          Se forma una imagen **virtual**, **derecha** y **ampliada**. (Como una lupa)
+          El objeto está dentro del foco. Produce una imagen <strong>Virtual</strong>, <strong>Derecha</strong> y <strong>Ampliada</strong> (como una lupa).
         </p>
-        <p class="case-description">
+        <p class="explicacion-texto">
           <strong>Lente Divergente:</strong><br>
-          Siempre se forma una imagen **virtual**, **derecha** y **menor** que el objeto.
+          No importa la distancia, siempre produce una imagen <strong>Virtual</strong>, <strong>Derecha</strong> y <strong>Reducida</strong> (como los lentes para miopía).
+        </p>
+
+        <strong class="explicacion-subtitulo">Etiquetas del Simulador</strong>
+        
+        <p class="explicacion-texto">
+          <strong>Tipo:</strong> Cambia entre lente <strong>Convergente</strong> (positiva, convexa) y <strong>Divergente</strong> (negativa, cóncava).
+        </p>
+        <p class="explicacion-texto">
+          <strong>F (px):</strong> Controla la <strong>Distancia Focal (<code>f</code>)</strong>. Un valor más pequeño significa una lente más potente.
+        </p>
+        <p class="explicacion-texto">
+          <strong>d_o (px):</strong> Controla la <strong>Distancia del Objeto (<code>d_o</code>)</strong>. Mueve la flecha blanca (objeto) más cerca o lejos.
+        </p>
+        <p class="explicacion-texto">
+          <strong>Iniciar animación:</strong> Mueve el objeto (<code>d_o</code>) automáticamente para ver cómo cambia la imagen en tiempo real.
+        </p>
+        <p class="explicacion-texto">
+          <strong>Panel "Resultados":</strong> Muestra los cálculos de <code>d_i</code> (distancia de la imagen) y <code>A</code> (aumento) basados en tus controles.
         </p>
 
       </div>
@@ -144,6 +188,7 @@
 
   <script>
     // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
+    // (El código JavaScript no necesita cambios, es el mismo de la versión anterior)
     const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
     
