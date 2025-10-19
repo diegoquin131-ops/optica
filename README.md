@@ -27,7 +27,7 @@
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
     
-    /* --- CSS para Pixel Art (Restaurado) --- */
+    /* --- CSS para Pixel Art --- */
     .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px; margin-bottom: 5px; width: fit-content;}
     .px{width:12px;height:12px;border-radius:2px;opacity:.08}
     .px.on{opacity:1}
@@ -49,9 +49,8 @@
     }
     .formula-display strong{ color: var(--accent2); font-size: 20px; }
     
-    /* Cuadrícula para el pixel art Y su texto */
     .example-grid {
-      margin-bottom: 16px; /* Espacio entre ejemplos */
+      margin-bottom: 16px; 
     }
     .example-grid p {
       margin: 0;
@@ -60,7 +59,7 @@
       line-height: 1.4;
     }
 
-    /* --- CSS para la NUEVA Guía del Simulador --- */
+    /* --- CSS para Guía del Simulador --- */
     #explicacionSimulador {
         padding: 16px 20px;
     }
@@ -83,7 +82,6 @@
         color: #eaf2ff; 
         font-weight: 600;
     }
-    /* Para colorear las explicaciones de los rayos */
     .rayo-naranja { color: rgba(255, 200, 80, 0.95); }
     .rayo-verde { color: rgba(80, 255, 200, 0.95); }
     .rayo-magenta { color: rgba(255, 100, 255, 0.95); }
@@ -137,22 +135,22 @@
       <div class="panel" id="explicacionSimulador">
         <h4 class="guia-subtitulo" style="margin-top: 0;">Guía de Elementos del Simulador</h4>
         <ul class="guia-lista">
-          <li><strong>Flecha Blanca (Objeto):</strong> Representa el objeto real que estás observando. Su altura es la altura del objeto y su posición horizontal es la <code>d_o</code> (distancia objeto).</li>
-          <li><strong>Flecha Azul/Cian (Imagen):</strong> Es la imagen formada por la lente. Si es azul sólida, es una imagen <strong>Real</strong> (se puede proyectar). Si es cian y punteada, es <strong>Virtual</strong> (solo se ve a través de la lente).</li>
-          <li><strong>Línea Central Horizontal:</strong> Es el <strong>Eje Óptico</strong>, la línea de simetría del sistema.</li>
+          <li><strong>Flecha Blanca (Objeto):</strong> Representa el objeto real que estás observando. Su posición es la <code>d_o</code> (distancia objeto).</li>
+          <li><strong>Flecha Azul/Cian (Imagen):</strong> Es la imagen formada por la lente. Si es azul sólida, es una imagen <strong>Real</strong>. Si es cian y punteada, es <strong>Virtual</strong>.</li>
+          <li><strong>Línea Central Horizontal:</strong> Es el <strong>Eje Óptico</strong>, la línea de simetría.</li>
           <li><strong>Forma en el Centro (Lente):</strong> Representa la lente delgada (Convexa o Cóncava).</li>
-          <li><strong>Puntos (F) y (F'):</strong> Son los <strong>Puntos Focales</strong>. <code>F</code> es el foco objeto y <code>F'</code> es el foco imagen. Su distancia al centro es <code>f</code>.</li>
-          <li class="rayo-naranja"><strong>Línea Naranja:</strong> Es el <strong>Rayo Paralelo</strong>. Sale paralelo al eje, cruza la lente y se desvía hacia el foco <code>F'</code> (o aparenta venir de <code>F'</code> si es divergente).</li>
-          <li class="rayo-verde"><strong>Línea Verde:</strong> Es el <strong>Rayo Central</strong>. Pasa por el centro exacto de la lente y no se desvía en absoluto.</li>
-          <li class="rayo-magenta"><strong>Línea Magenta:</strong> Es el <strong>Rayo Focal</strong>. Pasa (o apunta) por el foco <code>F</code>, cruza la lente y sale paralelo al eje.</li>
+          <li><strong>Puntos (F) y (F'):</strong> Son los <strong>Puntos Focales</strong>. Su distancia al centro es <code>f</code>.</li>
+          <li class="rayo-naranja"><strong>Línea Naranja:</strong> <strong>Rayo Paralelo</strong>. Sale paralelo al eje, cruza la lente y se desvía hacia el foco <code>F'</code>.</li>
+          <li class="rayo-verde"><strong>Línea Verde:</strong> <strong>Rayo Central</strong>. Pasa por el centro de la lente y no se desvía.</li>
+          <li class="rayo-magenta"><strong>Línea Magenta:</strong> <strong>Rayo Focal</strong>. Pasa por el foco <code>F</code>, cruza la lente y sale paralelo.</li>
         </ul>
 
         <h4 class="guia-subtitulo">Guía de Controles (Etiquetas)</h4>
         <ul class="guia-lista">
-          <li><strong>Tipo:</strong> Cambia entre lente <strong>Convergente</strong> (positiva, convexa) y <strong>Divergente</strong> (negativa, cóncava).</li>
-          <li><strong>Slider F (px):</strong> Controla la <strong>Distancia Focal (<code>f</code>)</strong>. Un valor más pequeño significa una lente más potente y curva.</li>
-          <li><strong>Slider d_o (px):</strong> Controla la <strong>Distancia del Objeto (<code>d_o</code>)</strong>. Mueve la flecha blanca (objeto).</li>
-          <li><strong>Resultados:</strong> Te dice la <strong>Distancia de la Imagen (<code>d_i</code>)</strong> y el <strong>Aumento (<code>A</code>)</strong> calculados en tiempo real.</li>
+          <li><strong>Tipo:</strong> Cambia entre lente <strong>Convergente</strong> (positiva) y <strong>Divergente</strong> (negativa).</li>
+          <li><strong>Slider F (px):</strong> Controla la <strong>Distancia Focal (<code>f</code>)</strong>.</li>
+          <li><strong>Slider d_o (px):</strong> Controla la <strong>Distancia del Objeto (<code>d_o</code>)</strong>.</li>
+          <li><strong>Resultados:</strong> Muestra la <strong>Distancia de la Imagen (<code>d_i</code>)</strong> y el <strong>Aumento (<code>A</code>)</strong> calculados.</li>
         </ul>
       </div>
 
@@ -179,7 +177,7 @@
         <div class="example-grid">
           <div class="pixel-grid" id="pixelEx1"></div>
           <p><strong>Conv. (d<sub>o</sub> > f): Real, Invertida</strong><br>
-            El objeto está fuera del foco. Produce una imagen real que se puede proyectar (como un proyector de cine).</p>
+            El objeto está fuera del foco. Produce una imagen real (como un proyector).</p>
         </div>
         
         <div class="example-grid">
@@ -193,16 +191,24 @@
           <p><strong>Divergente: Virtual, Derecha, Menor</strong><br>
             Siempre produce una imagen virtual, derecha y más pequeña (como un lente de miopía).</p>
         </div>
-      </div>
+
+        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px; display: block; margin-top: 20px; border-top: 1px solid var(--glass); padding-top: 16px;">
+          Leyenda de Colores (Ejemplos)
+        </strong>
+        <p style="font-size: 13px; color: var(--muted); margin: 10px 0 0 4px; line-height: 1.6;">
+          🟦 <strong>Cuadrados Azules:</strong> Representan el <strong>Objeto</strong>.<br>
+          🌐 <strong>Cuadrados Cian:</strong> Representan la <strong>Imagen</strong>.<br>
+          🗄️ <strong>Cuadrados Grises:</strong> Representan la <strong>Lente</strong>.
+        </p>
+        </div>
     </aside>
   </main>
 
   <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
-    // --- Construcción pixel-art para ejemplos (Restaurado) ---
+    // --- Construcción pixel-art para ejemplos ---
     (function(){
-      // 0=vacío, 1=objeto (azul), 2=imagen (cyan), 3=lente (gris)
       const ex1_arr = [0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,3,0,0,0,2,0,0];
       const ex2_arr = [0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0];
       const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
