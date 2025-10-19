@@ -27,16 +27,17 @@
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
     
-    .pixel-row{display:flex;gap:8px;align-items:center}
-    .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px}
-    .px{width:12px;height:12px;border-radius:2px;opacity:.08}
-    .px.on{opacity:1}
-    .px.obj{background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
-    .px.img{background:var(--accent2);box-shadow:0 0 6px rgba(102,255,255,0.35)}
-    .px.lens{background:#556;box-shadow:0 0 4px rgba(85,85,102,0.35)}
+    /* --- CSS para Fórmulas --- */
+    
+    /* ===== CAMBIO AQUÍ ===== */
+    #formulas {
+      background: #08101a; /* Fondo oscuro, igual que los controles */
+      border: 1px solid var(--accent); /* Borde de acento */
+    }
+    /* ======================= */
 
     .formula-display{
-      background:rgba(0,0,0,0.25);
+      background:rgba(0,0,0,0.25); /* Este es el fondo de la fórmula en sí */
       padding:16px;
       border-radius:8px;
       font-family:monospace;
@@ -49,20 +50,13 @@
       color: var(--accent2);
       font-size: 20px;
     }
-    .example-grid{
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 8px;
+    .case-description {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 8px;
     }
-    .example-grid p{
-      flex: 1;
-      margin: 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .example-grid .pixel-grid{
-      flex-shrink: 0;
+    .case-description strong {
+        color: var(--accent); 
     }
 
     footer{text-align:center;color:var(--muted);margin-top:12px}
@@ -127,20 +121,20 @@
           1/<strong>f</strong> = 1/<strong>d<sub>o</sub></strong> + 1/<strong>d<sub>i</sub></strong>
         </div>
         
-        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px;">Casos Principales:</strong>
+        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px; display: block; margin-bottom: 8px;">Casos Principales:</strong>
         
-        <div class="example-grid">
-          <div class="pixel-grid" id="pixelEx1"></div>
-          <p><strong>Conv. (d<sub>o</sub> > f)</strong><br>Real, Invertida</p>
-        </div>
-        <div class="example-grid">
-          <div class="pixel-grid" id="pixelEx2"></div>
-          <p><strong>Conv. (d<sub>o</sub> < f)</strong><br>Virtual, Derecha</p>
-        </div>
-        <div class="example-grid">
-          <div class="pixel-grid" id="pixelEx3"></div>
-          <p><strong>Divergente</strong><br>Virtual, Derecha, Menor</p>
-        </div>
+        <p class="case-description">
+          <strong>Lente Convergente (d<sub>o</sub> > f):</strong><br>
+          Se forma una imagen **real**, **invertida** y su tamaño depende de la distancia del objeto.
+        </p>
+        <p class="case-description">
+          <strong>Lente Convergente (d<sub>o</sub> < f):</strong><br>
+          Se forma una imagen **virtual**, **derecha** y **ampliada**. (Como una lupa)
+        </p>
+        <p class="case-description">
+          <strong>Lente Divergente:</strong><br>
+          Siempre se forma una imagen **virtual**, **derecha** y **menor** que el objeto.
+        </p>
 
       </div>
     </aside>
@@ -149,29 +143,6 @@
   <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
-    // --- Construcción pixel-art para ejemplos ---
-    (function(){
-      const ex1_arr = [0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,3,0,0,0,2,0,0];
-      const ex2_arr = [0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0];
-      const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-
-      function build(id,arr){
-        const el=document.getElementById(id);
-        arr.forEach(v=>{
-          const d=document.createElement('div');
-          d.className='px';
-          if(v === 1) d.classList.add('obj');
-          if(v === 2) d.classList.add('img');
-          if(v === 3) d.classList.add('lens');
-          if(v > 0) d.classList.add('on');
-          el.appendChild(d);
-        });
-      }
-      build('pixelEx1', ex1_arr);
-      build('pixelEx2', ex2_arr);
-      build('pixelEx3', ex3_arr);
-    })();
-
     // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
     const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
@@ -305,7 +276,7 @@
     
     function renderLoop(){
       if(anim){
-        animT += 0.008; // Velocidad de animación reducida
+        animT += 0.008; 
         const base = 380; const range = 320;
         doRange.value = base + Math.sin(animT) * range;
       }
