@@ -27,12 +27,16 @@
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
     
-    /* --- CSS para Fórmulas y Explicaciones --- */
-    #formulas {
-      background: #08101a; 
-      border: 1px solid var(--accent); 
-    }
+    /* --- CSS para Pixel Art (Restaurado) --- */
+    .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px; margin-bottom: 5px; width: fit-content;}
+    .px{width:12px;height:12px;border-radius:2px;opacity:.08}
+    .px.on{opacity:1}
+    .px.obj{background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
+    .px.img{background:var(--accent2);box-shadow:0 0 6px rgba(102,255,255,0.35)}
+    .px.lens{background:#556;box-shadow:0 0 4px rgba(85,85,102,0.35)}
 
+    /* --- CSS para Fórmulas --- */
+    #formulas { background: #08101a; border: 1px solid var(--accent); }
     .formula-display{
       background:rgba(0,0,0,0.25);
       padding:16px;
@@ -43,36 +47,47 @@
       color:#eaf2ff;
       margin-bottom:16px;
     }
-    .formula-display strong{
-      color: var(--accent2);
-      font-size: 20px;
-    }
+    .formula-display strong{ color: var(--accent2); font-size: 20px; }
     
-    /* Estilos para el texto de explicación */
-    .explicacion-subtitulo {
-        font-size: 14px; 
-        color: var(--muted); 
-        margin-left: 4px; 
-        display: block; 
-        margin-top: 20px; /* Añade espacio antes de cada subtítulo */
-        margin-bottom: 8px;
-        border-top: 1px solid var(--glass); /* Línea separadora */
-        padding-top: 16px;
+    /* Cuadrícula para el pixel art Y su texto */
+    .example-grid {
+      margin-bottom: 16px; /* Espacio entre ejemplos */
     }
-    .explicacion-texto {
+    .example-grid p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* --- CSS para la NUEVA Guía del Simulador --- */
+    #explicacionSimulador {
+        padding: 16px 20px;
+    }
+    .guia-subtitulo {
+        font-size: 16px;
+        color: var(--accent2);
+        margin-top: 16px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--glass);
+        padding-bottom: 6px;
+    }
+    .guia-lista {
         font-size: 13px;
         color: var(--muted);
-        margin-bottom: 12px;
-        line-height: 1.5;
+        line-height: 1.6;
+        padding-left: 20px;
     }
-    /* Para resaltar las variables en las explicaciones */
-    .explicacion-texto code {
-        color: var(--accent2);
-        background: rgba(0,0,0,0.2);
-        padding: 2px 4px;
-        border-radius: 4px;
-        font-family: monospace;
+    .guia-lista li { margin-bottom: 8px; }
+    .guia-lista code, .guia-lista strong {
+        color: #eaf2ff; 
+        font-weight: 600;
     }
+    /* Para colorear las explicaciones de los rayos */
+    .rayo-naranja { color: rgba(255, 200, 80, 0.95); }
+    .rayo-verde { color: rgba(80, 255, 200, 0.95); }
+    .rayo-magenta { color: rgba(255, 100, 255, 0.95); }
+
 
     footer{text-align:center;color:var(--muted);margin-top:12px}
     @media (max-width:1040px){.wrap{grid-template-columns:1fr}canvas{height:300px}}
@@ -118,6 +133,29 @@
           <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Usa los controles para cambiar la lente y las distancias. Presiona espacio para iniciar/detener la animación.</p>
         </div>
       </div>
+
+      <div class="panel" id="explicacionSimulador">
+        <h4 class="guia-subtitulo" style="margin-top: 0;">Guía de Elementos del Simulador</h4>
+        <ul class="guia-lista">
+          <li><strong>Flecha Blanca (Objeto):</strong> Representa el objeto real que estás observando. Su altura es la altura del objeto y su posición horizontal es la <code>d_o</code> (distancia objeto).</li>
+          <li><strong>Flecha Azul/Cian (Imagen):</strong> Es la imagen formada por la lente. Si es azul sólida, es una imagen <strong>Real</strong> (se puede proyectar). Si es cian y punteada, es <strong>Virtual</strong> (solo se ve a través de la lente).</li>
+          <li><strong>Línea Central Horizontal:</strong> Es el <strong>Eje Óptico</strong>, la línea de simetría del sistema.</li>
+          <li><strong>Forma en el Centro (Lente):</strong> Representa la lente delgada (Convexa o Cóncava).</li>
+          <li><strong>Puntos (F) y (F'):</strong> Son los <strong>Puntos Focales</strong>. <code>F</code> es el foco objeto y <code>F'</code> es el foco imagen. Su distancia al centro es <code>f</code>.</li>
+          <li class="rayo-naranja"><strong>Línea Naranja:</strong> Es el <strong>Rayo Paralelo</strong>. Sale paralelo al eje, cruza la lente y se desvía hacia el foco <code>F'</code> (o aparenta venir de <code>F'</code> si es divergente).</li>
+          <li class="rayo-verde"><strong>Línea Verde:</strong> Es el <strong>Rayo Central</strong>. Pasa por el centro exacto de la lente y no se desvía en absoluto.</li>
+          <li class="rayo-magenta"><strong>Línea Magenta:</strong> Es el <strong>Rayo Focal</strong>. Pasa (o apunta) por el foco <code>F</code>, cruza la lente y sale paralelo al eje.</li>
+        </ul>
+
+        <h4 class="guia-subtitulo">Guía de Controles (Etiquetas)</h4>
+        <ul class="guia-lista">
+          <li><strong>Tipo:</strong> Cambia entre lente <strong>Convergente</strong> (positiva, convexa) y <strong>Divergente</strong> (negativa, cóncava).</li>
+          <li><strong>Slider F (px):</strong> Controla la <strong>Distancia Focal (<code>f</code>)</strong>. Un valor más pequeño significa una lente más potente y curva.</li>
+          <li><strong>Slider d_o (px):</strong> Controla la <strong>Distancia del Objeto (<code>d_o</code>)</strong>. Mueve la flecha blanca (objeto).</li>
+          <li><strong>Resultados:</strong> Te dice la <strong>Distancia de la Imagen (<code>d_i</code>)</strong> y el <strong>Aumento (<code>A</code>)</strong> calculados en tiempo real.</li>
+        </ul>
+      </div>
+
     </section>
 
     <aside class="aside">
@@ -130,56 +168,31 @@
       </div>
 
       <div class="panel" id="formulas">
-        <h4>Fórmulas, Casos y Controles</h4>
+        <h4>Fórmula y Ejemplos</h4>
         
         <div class="formula-display">
           1/<strong>f</strong> = 1/<strong>d<sub>o</sub></strong> + 1/<strong>d<sub>i</sub></strong>
         </div>
         
-        <strong class="explicacion-subtitulo">Explicación de las Fórmulas</strong>
+        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px; display: block; margin-bottom: 8px;">Casos Principales:</strong>
         
-        <p class="explicacion-texto">
-          <strong>Ecuación de Lentes:</strong> <code>1/f = 1/d_o + 1/d_i</code><br>
-          Relaciona la distancia focal (<code>f</code>), la distancia del objeto (<code>d_o</code>) y la distancia de la imagen (<code>d_i</code>).
-        </p>
-        <p class="explicacion-texto">
-          <strong>Aumento (A):</strong> <code>A = -d_i / d_o</code><br>
-          Calcula el tamaño y la orientación de la imagen. Si <code>A</code> es negativo, la imagen está invertida. Si <code>A</code> es positivo, está derecha.
-        </p>
-
-        <strong class="explicacion-subtitulo">Casos Principales</strong>
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx1"></div>
+          <p><strong>Conv. (d<sub>o</sub> > f): Real, Invertida</strong><br>
+            El objeto está fuera del foco. Produce una imagen real que se puede proyectar (como un proyector de cine).</p>
+        </div>
         
-        <p class="explicacion-texto">
-          <strong>Lente Convergente (d<sub>o</sub> > f):</strong><br>
-          El objeto está fuera del foco. Produce una imagen <strong>Real</strong> e <strong>Invertida</strong> (como un proyector).
-        </p>
-        <p class="explicacion-texto">
-          <strong>Lente Convergente (d<sub>o</sub> < f):</strong><br>
-          El objeto está dentro del foco. Produce una imagen <strong>Virtual</strong>, <strong>Derecha</strong> y <strong>Ampliada</strong> (como una lupa).
-        </p>
-        <p class="explicacion-texto">
-          <strong>Lente Divergente:</strong><br>
-          No importa la distancia, siempre produce una imagen <strong>Virtual</strong>, <strong>Derecha</strong> y <strong>Reducida</strong> (como los lentes para miopía).
-        </p>
-
-        <strong class="explicacion-subtitulo">Etiquetas del Simulador</strong>
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx2"></div>
+          <p><strong>Conv. (d<sub>o</sub> < f): Virtual, Derecha</strong><br>
+            El objeto está dentro del foco. Produce una imagen virtual ampliada (como una lupa).</p>
+        </div>
         
-        <p class="explicacion-texto">
-          <strong>Tipo:</strong> Cambia entre lente <strong>Convergente</strong> (positiva, convexa) y <strong>Divergente</strong> (negativa, cóncava).
-        </p>
-        <p class="explicacion-texto">
-          <strong>F (px):</strong> Controla la <strong>Distancia Focal (<code>f</code>)</strong>. Un valor más pequeño significa una lente más potente.
-        </p>
-        <p class="explicacion-texto">
-          <strong>d_o (px):</strong> Controla la <strong>Distancia del Objeto (<code>d_o</code>)</strong>. Mueve la flecha blanca (objeto) más cerca o lejos.
-        </p>
-        <p class="explicacion-texto">
-          <strong>Iniciar animación:</strong> Mueve el objeto (<code>d_o</code>) automáticamente para ver cómo cambia la imagen en tiempo real.
-        </p>
-        <p class="explicacion-texto">
-          <strong>Panel "Resultados":</strong> Muestra los cálculos de <code>d_i</code> (distancia de la imagen) y <code>A</code> (aumento) basados en tus controles.
-        </p>
-
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx3"></div>
+          <p><strong>Divergente: Virtual, Derecha, Menor</strong><br>
+            Siempre produce una imagen virtual, derecha y más pequeña (como un lente de miopía).</p>
+        </div>
       </div>
     </aside>
   </main>
@@ -187,8 +200,31 @@
   <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
+    // --- Construcción pixel-art para ejemplos (Restaurado) ---
+    (function(){
+      // 0=vacío, 1=objeto (azul), 2=imagen (cyan), 3=lente (gris)
+      const ex1_arr = [0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,3,0,0,0,2,0,0];
+      const ex2_arr = [0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0];
+      const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+      function build(id,arr){
+        const el=document.getElementById(id);
+        arr.forEach(v=>{
+          const d=document.createElement('div');
+          d.className='px';
+          if(v === 1) d.classList.add('obj');
+          if(v === 2) d.classList.add('img');
+          if(v === 3) d.classList.add('lens');
+          if(v > 0) d.classList.add('on');
+          el.appendChild(d);
+        });
+      }
+      build('pixelEx1', ex1_arr);
+      build('pixelEx2', ex2_arr);
+      build('pixelEx3', ex3_arr);
+    })();
+
     // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
-    // (El código JavaScript no necesita cambios, es el mismo de la versión anterior)
     const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
     
