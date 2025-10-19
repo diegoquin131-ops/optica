@@ -27,17 +27,14 @@
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
     
-    /* --- CSS para Pixel Art (Mantenido para los nuevos ejemplos) --- */
     .pixel-row{display:flex;gap:8px;align-items:center}
     .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px}
     .px{width:12px;height:12px;border-radius:2px;opacity:.08}
     .px.on{opacity:1}
-    /* Clases de color para los ejemplos */
     .px.obj{background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
     .px.img{background:var(--accent2);box-shadow:0 0 6px rgba(102,255,255,0.35)}
     .px.lens{background:#556;box-shadow:0 0 4px rgba(85,85,102,0.35)}
 
-    /* --- CSS para Fórmulas (Nuevo) --- */
     .formula-display{
       background:rgba(0,0,0,0.25);
       padding:16px;
@@ -152,30 +149,11 @@
   <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
-    // --- Construcción pixel-art (MODIFICADO para los ejemplos) ---
+    // --- Construcción pixel-art para ejemplos ---
     (function(){
-      // 0=vacío, 1=objeto (azul), 2=imagen (cyan), 3=lente (gris)
-      const ex1_arr = [ // Real, Invertida
-        0,0,1,0,0,3,0,0,0,2,0,0,
-        0,0,1,0,0,3,0,0,0,2,0,0,
-        0,0,1,0,0,3,0,0,0,0,0,0,
-        0,0,0,0,0,3,0,0,0,2,0,0,
-        0,0,0,0,0,3,0,0,0,2,0,0
-      ];
-      const ex2_arr = [ // Virtual, Derecha
-        0,2,2,0,1,0,3,0,0,0,0,0,
-        0,2,2,0,1,0,3,0,0,0,0,0,
-        0,2,2,0,1,0,3,0,0,0,0,0,
-        0,2,2,0,0,0,3,0,0,0,0,0,
-        0,2,2,0,0,0,3,0,0,0,0,0
-      ];
-      const ex3_arr = [ // Divergente
-        0,0,1,0,0,3,0,3,0,0,0,0,
-        0,0,1,0,2,0,3,0,0,0,0,0,
-        0,0,1,0,2,0,3,0,0,0,0,0,
-        0,0,1,0,0,3,0,3,0,0,0,0,
-        0,0,0,0,0,0,0,0,0,0,0,0
-      ];
+      const ex1_arr = [0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,3,0,0,0,2,0,0];
+      const ex2_arr = [0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0];
+      const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
       function build(id,arr){
         const el=document.getElementById(id);
@@ -189,8 +167,6 @@
           el.appendChild(d);
         });
       }
-      
-      // Construye los nuevos ejemplos
       build('pixelEx1', ex1_arr);
       build('pixelEx2', ex2_arr);
       build('pixelEx3', ex3_arr);
@@ -214,7 +190,7 @@
       canvas.width=canvas.clientWidth*dpr;
       canvas.height=canvas.clientHeight*dpr;
       ctx.setTransform(dpr,0,0,dpr,0,0);
-      lastState = {}; // Forzar redibujo
+      lastState = {}; 
     }   
     window.addEventListener('resize', debounce(fitCanvas, 100));
 
@@ -329,8 +305,7 @@
     
     function renderLoop(){
       if(anim){
-        // *** CAMBIO: Velocidad de animación reducida ***
-        animT += 0.008; // Antes era 0.015
+        animT += 0.008; // Velocidad de animación reducida
         const base = 380; const range = 320;
         doRange.value = base + Math.sin(animT) * range;
       }
