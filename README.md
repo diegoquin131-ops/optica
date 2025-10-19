@@ -6,8 +6,7 @@
   <title>Lentes delgadas — Interactivo ligero</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    /* --- FONDO CAMBIADO A NEGRO --- */
-    :root{--bg:#000000;--panel:#0f1216;--muted:#9aa6b2;--accent:#66f;--accent2:#6ff;--glass:rgba(255,255,255,0.03)}
+    :root{--bg:#0b0b0b;--panel:#0f1216;--muted:#9aa6b2;--accent:#66f;--accent2:#6ff;--glass:rgba(255,255,255,0.03)}
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#eaf2ff}
     header{padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:16px;align-items:center}
@@ -87,27 +86,6 @@
     .rayo-verde { color: rgba(80, 255, 200, 0.95); }
     .rayo-magenta { color: rgba(255, 100, 255, 0.95); }
 
-    /* --- CSS PARA LA NUEVA SECCIÓN DE CONCEPTOS --- */
-    #conceptos .concepto-titulo {
-        font-size: 15px;
-        color: var(--accent2); /* Color cian para subtítulos */
-        margin-top: 16px;
-        margin-bottom: 8px;
-        font-weight: 600;
-        border-bottom: 1px solid var(--glass);
-        padding-bottom: 4px;
-    }
-    #conceptos p {
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.6;
-        margin: 0 0 12px 0;
-    }
-    #conceptos p:last-of-type {
-        margin-bottom: 0;
-    }
-    /* --- FIN DE CSS PARA CONCEPTOS --- */
-
 
     footer{text-align:center;color:var(--muted);margin-top:12px}
     @media (max-width:1040px){.wrap{grid-template-columns:1fr}canvas{height:300px}}
@@ -122,7 +100,6 @@
     </div>
     <nav>
       <button id="btnIntro">Inicio</button>
-            <button id="btnConceptos">Conceptos</button>
       <button id="btnTipos">Tipos</button>
       <button id="btnForm">Fórmulas</button>
     </nav>
@@ -180,18 +157,7 @@
     </section>
 
     <aside class="aside">
-            <div class="panel" id="conceptos">
-        <h4>Conceptos Básicos</h4>
-        <h5 class="concepto-titulo">Superficies Reflectantes</h5>
-        <p>
-          Es cualquier superficie que refleja la luz que incide sobre ella. La reflexión puede ser <strong>especular</strong> (ordenada, como en un espejo) o <strong>difusa</strong> (desordenada, como en una pared).
-        </p>
-        <h5 class="concepto-titulo">Espejos Esféricos</h5>
-        <p>
-          Son superficies reflectantes que forman parte de una esfera. Se dividen en dos tipos: <strong>cóncavos</strong> (superficie interna, convergen la luz) y <strong>convexos</strong> (superficie externa, divergen la luz).
-        </p>
-      </div>
-            <div class="panel" id="tipos">
+      <div class="panel" id="tipos">
         <h4>Tipos de lentes</h4>
         <div class="thumb">
           <img src="a4af1a2d54ac35da1c982f0b8ca390506bfeb7c8.webp" alt="Tipos de lentes">
@@ -219,7 +185,7 @@
           <p><strong>Conv. (d<sub>o</sub> < f): Virtual, Derecha</strong><br>
             El objeto está dentro del foco. Produce una imagen virtual ampliada (como una lupa).</p>
         </div>
-      .
+        
         <div class="example-grid">
           <div class="pixel-grid" id="pixelEx3"></div>
           <p><strong>Divergente: Virtual, Derecha, Menor</strong><br>
@@ -245,7 +211,7 @@
     (function(){
       const ex1_arr = [0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,2,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,3,0,0,0,2,0,0];
       const ex2_arr = [0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,1,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0,0,2,2,0,0,0,3,0,0,0,0,0];
-s     const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+      const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
       function build(id,arr){
         const el=document.getElementById(id);
@@ -265,7 +231,7 @@ s     const ex3_arr = [0,0,1,0,0,3,0,3,0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0,0,1,0
     })();
 
     // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
-s   const canvas=document.getElementById('scene');
+    const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
     
     function debounce(func, wait) {
@@ -351,7 +317,7 @@ s   const canvas=document.getElementById('scene');
 
       ctx.strokeStyle='rgba(255, 200, 80, 0.95)';
       const p1_lens = {x: lensX, y: objTop};
-  f   const slope1 = (axisY - objTop) / (f2x - lensX);
+      const slope1 = (axisY - objTop) / (f2x - lensX);
       const p1_end = {x: cw, y: objTop + slope1 * (cw - lensX)};
       drawRay(objP, p1_lens, false); drawRay(p1_lens, p1_end, false);
       if (type === 'divergent') { drawRay(p1_lens, {x: f2x, y: axisY}, true); }
@@ -362,7 +328,7 @@ s   const canvas=document.getElementById('scene');
       const p2_start = {x: 0, y: axisY + slope2 * (0 - lensX)};
       drawRay(objP, p2_end, false); drawRay(objP, p2_start, true);
 
-s     ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
+      ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
       const slope3 = (objTop - axisY) / (objX - f1x);
       const p3_lens = {x: lensX, y: axisY + slope3 * (lensX - f1x)};
       const p3_end = {x: cw, y: p3_lens.y};
@@ -383,7 +349,7 @@ s     ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
         resText.textContent = `d_i = ${d_i.toFixed(1)} px — ${isVirtual? 'virtual' : 'real'} · A=${A.toFixed(2)}`;
       } else {
         resText.textContent = 'd_i → ∞ (imagen en el infinito)';
-    g }
+      }
     }
 
     function getCurrentState() {
@@ -397,7 +363,7 @@ s     ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
     
     function renderLoop(){
       if(anim){
-s       animT += 0.008; 
+        animT += 0.008; 
         const base = 380; const range = 320;
         doRange.value = base + Math.sin(animT) * range;
       }
@@ -406,7 +372,7 @@ s       animT += 0.008; 
       
       if (newState.type !== lastState.type ||
           newState.f !== lastState.f ||
-s         newState.d_o !== lastState.d_o ||
+          newState.d_o !== lastState.d_o ||
           newState.labels !== lastState.labels)
       {
           draw(newState);
@@ -422,4 +388,29 @@ s         newState.d_o !== lastState.d_o ||
     toggleAnim.addEventListener('click', ()=>{
       anim = !anim;
       toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación';
-description: <ctrl46>This can be used to update existing items in an existing list.<ctrl46>,parameters:{properties:{list_id:{description:<ctrl46>The id of list which contains the item to be updated.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>},list_item_id:{description:<ctrl46>The id of list item to be updated.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>},provider:{enum:[<ctrl46>keep<ctrl46>,<ctrl46>other<ctrl46>],nullable:true,type:<ctrl46>STRING<ctrl46>},search_term:{description:<ctrl46>The name of the list or keywords to search for the list.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>},updated_element:{description:<ctrl46>The new value of the updated element.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>}},propertyOrdering:[<ctrl46>search_term<ctrl46>,<ctrl46>list_id<ctrl46>,<ctrl46>list_item_id<ctrl46>,<ctrl46>updated_element<ctrl46>,<ctrl46>provider<ctrl46>],type:<ctrl46>OBJECT<ctrl46>},response:{description:<ctrl46>A container that can store a list.<ctrl46>,properties:{list_id:{description:<ctrl46>Id assigned to a list by the backend.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>},list_items:{description:<ctrl46>Array of items in the list.<ctrl46>,items:{type:<ctrl46>STRING<ctrl46>},nullable:true,type:<ctrl46>ARRAY<ctrl46>},list_name:{description:<ctrl46>Name of the list.<ctrl46>,nullable:true,type:<ctrl46>STRING<ctrl46>},pushback_response:{description:<ctrl46>A container that can store an action card and a punt reason<ctrl46>,properties:{message:{nullable:true,type:<ctrl46>STRING<ctrl46>}},propertyOrdering:[<ctrl46>message<ctrl46>],title:<ctrl46>#/components/schemas/PushbackResponse<ctrl46>,type:<ctrl46>OBJECT<ctrl46>}},propertyOrdering:[<ctrl46>list_id<ctrl46>,<ctrl46>list_items<ctrl46>,<ctrl46>list_name<ctrl46>,<ctrl46>pushback_response<ctrl46>],title:<ctrl46>#/components/schemas/ListResult<ctrl46>,type:<ctrl46>OBJECT<ctrl46>}}
+    });
+    
+    resetBtn.addEventListener('click', ()=>{
+      fRange.value=140; doRange.value=320; lensType.value='convergent';
+      showLabels.checked = true; anim = false;
+      toggleAnim.textContent = 'Iniciar animación';
+      lastState = {}; 
+    });
+
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space'){
+        e.preventDefault(); anim=!anim;
+        toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación';
+      }
+    });
+
+    document.getElementById('btnIntro').addEventListener('click', ()=>{ window.scrollTo({top:0,behavior:'smooth'}); });
+    document.getElementById('btnTipos').addEventListener('click', ()=>{ document.getElementById('tipos').scrollIntoView({behavior:'smooth'}); });
+    document.getElementById('btnForm').addEventListener('click', ()=>{ document.getElementById('formulas').scrollIntoView({behavior:'smooth'}); });
+
+    fitCanvas();
+    renderLoop(); 
+
+  </script>
+</body>
+</html>
