@@ -47,26 +47,18 @@
     <div class="logo"><h1>LENTES</h1></div>
     <div>
       <div class="title">Lentes delgadas — Interactivo ligero</div>
-      <div style="font-size:13px;color:var(--muted)">Simulador optimizado para no trabarse — mueve controles o anima con espacio</div>
+      <div style="font-size:13px;color:var(--muted)">Simulador optimizado — mueve controles o anima con espacio</div>
     </div>
     <nav>
       <button id="btnIntro">Inicio</button>
       <button id="btnTipos">Tipos</button>
       <button id="btnForm">Fórmulas</button>
     </nav>
-<script>
-// Botón para activar/desactivar simulación
-let animando = false;
-function toggleSimulacion(){
-  animando = !animando;
-  document.getElementById('btnSim').innerText = animando ? 'Detener Simulación' : 'Iniciar Simulación';
-}
-</script>
   </header>
 
   <main class="wrap">
     <section class="panel canvas-wrap" aria-labelledby="sim-title">
-      <h3 id="sim-title">Simulador de rayos (ligero)</h3>
+      <h3 id="sim-title">Simulador de rayos (Optimizado y Corregido)</h3>
       <canvas id="scene" width="900" height="420" aria-label="Simulador de lentes"></canvas>
 
       <div class="controls">
@@ -96,8 +88,10 @@ function toggleSimulacion(){
 
     <aside class="aside">
       <div class="panel" id="tipos">
-        <h4>Tipos de lentes<br><img src="a4af1a2d54ac35da1c982f0b8ca390506bfeb7c8.webp" alt="Tipos de lentes" style="width:60%;display:block;margin:10px auto;border:2px solid #00aaff;border-radius:10px;clip-path:inset(0 0 20% 0);"></h4>
-        <div class="thumb"><img src="/mnt/data/a4af1a2d54ac35da1c982f0b8ca390506bfeb7c8.webp" alt="Tipos de lentes"></div>
+        <h4>Tipos de lentes</h4>
+        <div class="thumb">
+          <img src="a4af1a2d54ac35da1c982f0b8ca390506bfeb7c8.webp" alt="Tipos de lentes">
+        </div>
         <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Las lentes delgadas se clasifican en convergentes y divergentes. Las convergentes enfocan rayos paralelos a un punto; las divergentes los dispersan.</p>
       </div>
 
@@ -119,11 +113,11 @@ Ecuación de lentes delgadas:
 Aumento:
 A = - d_i / d_o
 
-Signos: f&gt;0 (convergente), f&lt;0 (divergente)
+Signos: f>0 (convergente), f<0 (divergente)
 
 Ejemplos:
-- d_o &gt; f (convergente): imagen real, invertida.
-- d_o &lt; f (convergente): imagen virtual, derecha, ampliada.
+- d_o > f (convergente): imagen real, invertida.
+- d_o < f (convergente): imagen virtual, derecha, ampliada.
 - divergente: siempre imagen virtual, derecha, menor.
         </pre>
       </div>
@@ -134,7 +128,7 @@ Ejemplos:
   <footer style="padding:12px">Optimizado para ser ligero — si tu navegador se queda sin memoria, cierra otras pestañas. Presiona espacio para animar.</footer>
 
   <script>
-    // --- Construcción pixel-art pequeña y eficiente ---
+    // --- Construcción pixel-art pequeña y eficiente (sin cambios) ---
     (function(){
       const conv=[0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0];
       const div=[0,0,1,1,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0];
@@ -142,12 +136,12 @@ Ejemplos:
       build('pixelConv',conv);build('pixelDiv',div);
     })();
 
-    // --- Simulador ligero ---
+    // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
     const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
-    // use devicePixelRatio for crispness while keeping layout size
-    function fitCanvas(){const dpr=window.devicePixelRatio||1;canvas.width=canvas.clientWidth*dpr;canvas.height=canvas.clientHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}    
-    fitCanvas();window.addEventListener('resize', ()=>{fitCanvas(); draw();});
+    
+    function fitCanvas(){const dpr=window.devicePixelRatio||1;canvas.width=canvas.clientWidth*dpr;canvas.height=canvas.clientHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0); lastState = {}; /* Forzar redibujo */ }   
+    window.addEventListener('resize', fitCanvas);
 
     const lensType=document.getElementById('lensType');
     const fRange=document.getElementById('fRange');
@@ -157,77 +151,221 @@ Ejemplos:
     const toggleAnim=document.getElementById('toggleAnim');
     const resetBtn=document.getElementById('resetBtn');
 
-    let anim=false; let animT=0;
+    let anim = false;
+    let animT = 0;
+    // --- OPTIMIZACIÓN: Almacenar el último estado renderizado ---
+    let lastState = {};
 
-    function clear(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+    function clear(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
 
-    // thin-lens calculation with units in px; sign convention: f>0 convergent, f<0 divergent
+    // Cálculo de lente delgada (sin cambios)
     function computeDi(f, d_o){ const denom=(1/f - 1/d_o); if(Math.abs(denom)<1e-6) return Infinity; return 1/denom; }
 
-    function drawLens(x,type){ ctx.save(); ctx.translate(x,canvas.clientHeight/2); ctx.fillStyle='rgba(255,255,255,0.02)'; ctx.beginPath();
-      if(type==='convergent'){ ctx.ellipse(0,0,20,100,0,0,Math.PI*2);} else { ctx.ellipse(0,0,20,100,0,0,Math.PI*2);} ctx.fill(); ctx.restore();
-    }
-
-    // draw once per frame but minimal operations
-    function draw(){ clear(); const cw=canvas.clientWidth, ch=canvas.clientHeight; const lensX=cw/2; const type=lensType.value; const fRaw=parseFloat(fRange.value); const d_o=parseFloat(doRange.value);
-      const signedF = (type==='convergent')? fRaw : -fRaw; const d_i = computeDi(signedF, d_o);
-      // draw axis
-      ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,ch/2); ctx.lineTo(cw,ch/2); ctx.stroke();
-      // lens
-      drawLens(lensX,type);
-      // object arrow
-      const objX = lensX - d_o; const objTop = ch/2 - 60;
-      ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(objX,ch/2); ctx.lineTo(objX,objTop); ctx.stroke(); ctx.beginPath(); ctx.moveTo(objX-8,objTop+8); ctx.lineTo(objX+8,objTop+8); ctx.lineTo(objX,objTop); ctx.fillStyle='white'; ctx.fill();
-      if(showLabels.checked){ ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='13px Inter'; ctx.fillText('Objeto (d_o)', Math.max(8, objX-80), objTop-8); }
-
-      // rays (3 main rays) — compute minimal points to draw
-      const rays = [];
-      const y0 = objTop;
-      // ray 1: parallel -> through focal
+    // Dibujar la lente (sin cambios)
+    function drawLens(x,type){
+      ctx.save();
+      ctx.translate(x, canvas.clientHeight/2);
+      ctx.fillStyle = 'rgba(120, 200, 255, 0.08)';
+      ctx.strokeStyle = 'rgba(120, 200, 255, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
       if(type==='convergent'){
-        const fx = lensX + signedF; // focal point on right
-        rays.push([{x:objX,y:y0},{x:lensX,y:y0},{x:cw,y:y0 + (0 - y0)*(cw-lensX)/(fx-lensX)}]);
+        ctx.moveTo(0, -100);
+        ctx.quadraticCurveTo(30, 0, 0, 100);
+        ctx.quadraticCurveTo(-30, 0, 0, -100);
       } else {
-        // diverging: make it look like it refracts as if from left focal
-        const virtualFx = lensX - Math.abs(signedF);
-        rays.push([{x:objX,y:y0},{x:lensX,y:y0},{x:cw,y:y0}]);
+        ctx.moveTo(10, -100);
+        ctx.quadraticCurveTo(-20, 0, 10, 100);
+        ctx.moveTo(-10, -100);
+        ctx.quadraticCurveTo(20, 0, -10, 100);
+        ctx.lineTo(10, 100);
       }
-      // ray 2: through center (straight)
-      rays.push([{x:objX,y:y0},{x:cw,y:y0}]);
-      // ray 3: toward focal on object side -> exits parallel
-      rays.push([{x:objX,y:y0},{x:lensX,y:y0},{x:cw,y:y0}]);
-
-      ctx.lineWidth=1.6; ctx.strokeStyle='rgba(255,200,80,0.95)';
-      rays.forEach(r=>{ ctx.beginPath(); ctx.moveTo(r[0].x, r[0].y); for(let i=1;i<r.length;i++) ctx.lineTo(r[i].x, r[i].y); ctx.stroke(); });
-
-      // image drawing
-      if(isFinite(d_i)){
-        const imgX = lensX + d_i; const A = -d_i/d_o; const imgHeight = ch/2 - (60 * A);
-        ctx.strokeStyle='rgba(120,200,255,0.95)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(imgX,ch/2); ctx.lineTo(imgX,imgHeight); ctx.stroke(); ctx.beginPath(); ctx.moveTo(imgX-8,imgHeight+8); ctx.lineTo(imgX+8,imgHeight+8); ctx.lineTo(imgX,imgHeight); ctx.fillStyle='rgba(120,200,255,0.95)'; ctx.fill(); if(showLabels.checked) ctx.fillText('Imagen (d_i)', Math.min(cw-140, imgX+8), imgHeight-6);
-        resText.textContent = `d_i = ${d_i.toFixed(1)} px — ${d_i>0? 'real' : 'virtual'} · A=${A.toFixed(2)}`;
-      } else { resText.textContent = 'd_i → ∞ (imagen en el infinito)'; }
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+    
+    // --- Helper para dibujar rayos (reales y virtuales) ---
+    function drawRay(p1, p2, isVirtual) {
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.setLineDash(isVirtual ? [4, 4] : []);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
     }
 
-    // animation loop — only update controls when animating
-    function loop(){ if(anim){ animT += 0.02; const base=320; const range=80; doRange.value = Math.max(60, Math.min(700, base + Math.sin(animT)*range)); draw(); } requestAnimationFrame(loop); }
-    loop();
+    // --- FUNCIÓN DE DIBUJO PRINCIPAL (LÓGICA CORREGIDA) ---
+    function draw(state){
+      clear();
+      const cw=canvas.clientWidth, ch=canvas.clientHeight;
+      const lensX=cw/2;
+      const axisY = ch/2;
+      
+      const { type, f: fRaw, d_o, labels } = state;
+      const signedF = (type==='convergent')? fRaw : -fRaw;
+      const d_i = computeDi(signedF, d_o);
+      
+      // 1. Eje óptico
+      ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(0,axisY); ctx.lineTo(cw,axisY); ctx.stroke();
+      
+      // 2. Lente
+      drawLens(lensX,type);
+      
+      // 3. Objeto
+      const objX = lensX - d_o;
+      const objH = 60;
+      const objTop = axisY - objH;
+      ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(objX,axisY); ctx.lineTo(objX,objTop); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(objX-6,objTop+6); ctx.lineTo(objX,objTop); ctx.lineTo(objX+6,objTop+6); ctx.fillStyle='white'; ctx.fill();
+      if(labels){ ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='13px Inter'; ctx.fillText('Objeto (o)', objX - 15, objTop-8); }
 
-    // event handlers lightweight
-    [lensType,fRange,doRange,showLabels].forEach(el=>el.addEventListener('input', ()=>{ draw(); }))
+      // 4. Puntos focales
+      const f1x = lensX - signedF; // Foco objeto
+      const f2x = lensX + signedF; // Foco imagen
+      if(labels){
+          ctx.fillStyle = 'rgba(255, 100, 100, 0.8)'; ctx.font = '12px Inter';
+          ctx.fillText('F', f1x - 5, axisY + 18);
+          ctx.fillText("F'", f2x - 5, axisY + 18);
+      }
 
-    toggleAnim.addEventListener('click', ()=>{ anim = !anim; toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación'; });
-    resetBtn.addEventListener('click', ()=>{ fRange.value=140; doRange.value=320; lensType.value='convergent'; draw(); });
+      // --- 5. TRAZADO DE RAYOS (CORREGIDO) ---
+      ctx.lineWidth=1.6;
+      const objP = {x: objX, y: objTop}; // Punto superior del objeto
 
-    // keyboard space toggles anim
-    window.addEventListener('keydown',(e)=>{ if(e.code==='Space'){ e.preventDefault(); anim=!anim; toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación'; } });
+      // Rayo 1: Paralelo -> Focal
+      ctx.strokeStyle='rgba(255, 200, 80, 0.95)';
+      const p1_lens = {x: lensX, y: objTop}; // Intersección con lente
+      const slope1 = (axisY - objTop) / (f2x - lensX); // Pendiente hacia/desde F'
+      const p1_end = {x: cw, y: objTop + slope1 * (cw - lensX)};
+      drawRay(objP, p1_lens, false); // Objeto -> Lente
+      drawRay(p1_lens, p1_end, false); // Lente -> Borde
+      if (type === 'divergent') { // Línea virtual desde F'
+          drawRay(p1_lens, {x: f2x, y: axisY}, true);
+      }
 
-    // initial draw
-    draw();
+      // Rayo 2: Central -> Recto
+      ctx.strokeStyle='rgba(80, 255, 200, 0.95)';
+      const p2_center = {x: lensX, y: axisY};
+      const slope2 = (objTop - axisY) / (objX - lensX);
+      const p2_end = {x: cw, y: axisY + slope2 * (cw - lensX)};
+      const p2_start = {x: 0, y: axisY + slope2 * (0 - lensX)};
+      drawRay(objP, p2_end, false); // Rayo real
+      drawRay(objP, p2_start, true); // Proyección virtual hacia atrás
 
-    // navigation buttons (scroll to panels)
+      // Rayo 3: Focal -> Paralelo
+      ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
+      const slope3 = (objTop - axisY) / (objX - f1x);
+      const p3_lens = {x: lensX, y: axisY + slope3 * (lensX - f1x)}; // Intersección con lente
+      const p3_end = {x: cw, y: p3_lens.y}; // Sale paralelo
+      drawRay(objP, p3_lens, false); // Objeto -> Lente
+      drawRay(p3_lens, p3_end, false); // Lente -> Borde
+      if (type === 'convergent') { // Línea virtual desde F
+          drawRay(objP, {x: f1x, y: axisY}, true);
+      }
+
+      // 6. Imagen
+      if(isFinite(d_i)){
+        const imgX = lensX + d_i; const A = -d_i/d_o;
+        const imgTop = axisY - (objH * A);
+        const isVirtual = d_i < 0;
+        
+        ctx.strokeStyle = isVirtual ? 'rgba(120,200,255,0.5)' : 'rgba(120,200,255,0.95)';
+        ctx.fillStyle = isVirtual ? 'rgba(120,200,255,0.5)' : 'rgba(120,200,255,0.95)';
+        ctx.lineWidth=2;
+        
+        drawRay({x: imgX, y: axisY}, {x: imgX, y: imgTop}, isVirtual); // Eje de la imagen
+        
+        // Flecha
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        const arrowDir = (A > 0) ? 6 : -6; // Dirección de la flecha
+        ctx.moveTo(imgX - 6, imgTop + arrowDir);
+        ctx.lineTo(imgX, imgTop);
+        ctx.lineTo(imgX + 6, imgTop + arrowDir);
+        ctx.fill();
+        
+        if(labels) ctx.fillText('Imagen (i)', imgX + 8, imgTop + (A > 0 ? -6 : 6) );
+        resText.textContent = `d_i = ${d_i.toFixed(1)} px — ${isVirtual? 'virtual' : 'real'} · A=${A.toFixed(2)}`;
+      } else {
+        resText.textContent = 'd_i → ∞ (imagen en el infinito)';
+      }
+    }
+
+    // --- OPTIMIZACIÓN: Función para obtener el estado actual de los controles ---
+    function getCurrentState() {
+        return {
+            type: lensType.value,
+            f: parseFloat(fRange.value),
+            d_o: parseFloat(doRange.value),
+            labels: showLabels.checked
+        };
+    }
+    
+    // --- OPTIMIZACIÓN: Bucle de renderizado principal ---
+    function renderLoop(){
+      if(anim){
+        animT += 0.015; // Velocidad de animación
+        const base = 380;
+        const range = 320; // Rango de 60 a 700
+        doRange.value = base + Math.sin(animT) * range;
+      }
+      
+      const newState = getCurrentState();
+      
+      // Compara el estado nuevo con el anterior.
+      // ¡SOLO DIBUJA SI ALGO CAMBIÓ!
+      if (newState.type !== lastState.type ||
+          newState.f !== lastState.f ||
+          newState.d_o !== lastState.d_o ||
+          newState.labels !== lastState.labels)
+      {
+          draw(newState);
+          lastState = newState; // Guarda el estado recién dibujado
+      }
+      
+      requestAnimationFrame(renderLoop); // Continúa el bucle
+    }
+
+    // --- OPTIMIZACIÓN: Event listeners simplificados ---
+    // Ya no se necesita 'input' para los sliders, el bucle "renderLoop" se encarga.
+    // Los 'change' son para selecciones y checkboxes.
+    lensType.addEventListener('change', () => { lastState = {}; }); // Forzar redibujo
+    showLabels.addEventListener('change', () => { lastState = {}; }); // Forzar redibujo
+
+    toggleAnim.addEventListener('click', ()=>{
+      anim = !anim;
+      toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación';
+    });
+    
+    resetBtn.addEventListener('click', ()=>{
+      fRange.value=140;
+      doRange.value=320;
+      lensType.value='convergent';
+      showLabels.checked = true;
+      anim = false;
+      toggleAnim.textContent = 'Iniciar animación';
+      lastState = {}; // Forzar redibujo
+    });
+
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space'){
+        e.preventDefault();
+        anim=!anim;
+        toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación';
+      }
+    });
+
+    // --- Navegación (sin cambios) ---
     document.getElementById('btnIntro').addEventListener('click', ()=>{ window.scrollTo({top:0,behavior:'smooth'}); });
     document.getElementById('btnTipos').addEventListener('click', ()=>{ document.getElementById('tipos').scrollIntoView({behavior:'smooth'}); });
     document.getElementById('btnForm').addEventListener('click', ()=>{ document.getElementById('formulas').scrollIntoView({behavior:'smooth'}); });
+
+    // --- Arranque inicial ---
+    fitCanvas();
+    renderLoop(); // Inicia el bucle de renderizado optimizado
+
   </script>
 </body>
 </html>
