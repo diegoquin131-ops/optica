@@ -26,11 +26,48 @@
     .aside{display:flex;flex-direction:column;gap:12px}
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
+    
+    /* --- CSS para Pixel Art (Mantenido para los nuevos ejemplos) --- */
     .pixel-row{display:flex;gap:8px;align-items:center}
     .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px}
     .px{width:12px;height:12px;border-radius:2px;opacity:.08}
-    .px.on{opacity:1;background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
-    pre{background:rgba(0,0,0,0.25);padding:10px;border-radius:8px;overflow:auto}
+    .px.on{opacity:1}
+    /* Clases de color para los ejemplos */
+    .px.obj{background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
+    .px.img{background:var(--accent2);box-shadow:0 0 6px rgba(102,255,255,0.35)}
+    .px.lens{background:#556;box-shadow:0 0 4px rgba(85,85,102,0.35)}
+
+    /* --- CSS para Fórmulas (Nuevo) --- */
+    .formula-display{
+      background:rgba(0,0,0,0.25);
+      padding:16px;
+      border-radius:8px;
+      font-family:monospace;
+      font-size:18px;
+      text-align:center;
+      color:#eaf2ff;
+      margin-bottom:16px;
+    }
+    .formula-display strong{
+      color: var(--accent2);
+      font-size: 20px;
+    }
+    .example-grid{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .example-grid p{
+      flex: 1;
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .example-grid .pixel-grid{
+      flex-shrink: 0;
+    }
+
     footer{text-align:center;color:var(--muted);margin-top:12px}
     @media (max-width:1040px){.wrap{grid-template-columns:1fr}canvas{height:300px}}
   </style>
@@ -86,31 +123,28 @@
         <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Las lentes delgadas se clasifican en convergentes y divergentes. Las convergentes enfocan rayos paralelos; las divergentes los dispersan.</p>
       </div>
 
-      <div class="panel">
-        <h4>Pixel-art</h4>
-        <div class="pixel-row">
-          <div class="pixel-grid" id="pixelConv"></div>
-          <div class="pixel-grid" id="pixelDiv"></div>
-        </div>
-        <div style="color:var(--muted);font-size:13px;margin-top:8px">Conv — centro grueso · Div — centro delgado</div>
-      </div>
-
       <div class="panel" id="formulas">
-        <h4>Fórmulas y ejemplos</h4>
-        <pre>
-Ecuación de lentes delgadas:
-1/f = 1/d_o + 1/d_i
+        <h4>Fórmula y Ejemplos</h4>
+        
+        <div class="formula-display">
+          1/<strong>f</strong> = 1/<strong>d<sub>o</sub></strong> + 1/<strong>d<sub>i</sub></strong>
+        </div>
+        
+        <strong style="font-size: 14px; color: var(--muted); margin-left: 4px;">Casos Principales:</strong>
+        
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx1"></div>
+          <p><strong>Conv. (d<sub>o</sub> > f)</strong><br>Real, Invertida</p>
+        </div>
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx2"></div>
+          <p><strong>Conv. (d<sub>o</sub> < f)</strong><br>Virtual, Derecha</p>
+        </div>
+        <div class="example-grid">
+          <div class="pixel-grid" id="pixelEx3"></div>
+          <p><strong>Divergente</strong><br>Virtual, Derecha, Menor</p>
+        </div>
 
-Aumento:
-A = - d_i / d_o
-
-Signos: f>0 (convergente), f<0 (divergente)
-
-Ejemplos:
-- d_o > f (convergente): imagen real, invertida.
-- d_o < f (convergente): imagen virtual, derecha, ampliada.
-- divergente: siempre imagen virtual, derecha, menor.
-        </pre>
       </div>
     </aside>
   </main>
@@ -118,12 +152,48 @@ Ejemplos:
   <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
-    // --- Construcción pixel-art (sin cambios) ---
+    // --- Construcción pixel-art (MODIFICADO para los ejemplos) ---
     (function(){
-      const conv=[0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0];
-      const div=[0,0,1,1,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0];
-      function build(id,arr){const el=document.getElementById(id);arr.forEach(v=>{const d=document.createElement('div');d.className='px';if(v) d.classList.add('on');el.appendChild(d)});}
-      build('pixelConv',conv);build('pixelDiv',div);
+      // 0=vacío, 1=objeto (azul), 2=imagen (cyan), 3=lente (gris)
+      const ex1_arr = [ // Real, Invertida
+        0,0,1,0,0,3,0,0,0,2,0,0,
+        0,0,1,0,0,3,0,0,0,2,0,0,
+        0,0,1,0,0,3,0,0,0,0,0,0,
+        0,0,0,0,0,3,0,0,0,2,0,0,
+        0,0,0,0,0,3,0,0,0,2,0,0
+      ];
+      const ex2_arr = [ // Virtual, Derecha
+        0,2,2,0,1,0,3,0,0,0,0,0,
+        0,2,2,0,1,0,3,0,0,0,0,0,
+        0,2,2,0,1,0,3,0,0,0,0,0,
+        0,2,2,0,0,0,3,0,0,0,0,0,
+        0,2,2,0,0,0,3,0,0,0,0,0
+      ];
+      const ex3_arr = [ // Divergente
+        0,0,1,0,0,3,0,3,0,0,0,0,
+        0,0,1,0,2,0,3,0,0,0,0,0,
+        0,0,1,0,2,0,3,0,0,0,0,0,
+        0,0,1,0,0,3,0,3,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0
+      ];
+
+      function build(id,arr){
+        const el=document.getElementById(id);
+        arr.forEach(v=>{
+          const d=document.createElement('div');
+          d.className='px';
+          if(v === 1) d.classList.add('obj');
+          if(v === 2) d.classList.add('img');
+          if(v === 3) d.classList.add('lens');
+          if(v > 0) d.classList.add('on');
+          el.appendChild(d);
+        });
+      }
+      
+      // Construye los nuevos ejemplos
+      build('pixelEx1', ex1_arr);
+      build('pixelEx2', ex2_arr);
+      build('pixelEx3', ex3_arr);
     })();
 
     // --- Simulador ligero (OPTIMIZADO Y CORREGIDO) ---
@@ -259,7 +329,8 @@ Ejemplos:
     
     function renderLoop(){
       if(anim){
-        animT += 0.015;
+        // *** CAMBIO: Velocidad de animación reducida ***
+        animT += 0.008; // Antes era 0.015
         const base = 380; const range = 320;
         doRange.value = base + Math.sin(animT) * range;
       }
