@@ -15,30 +15,23 @@
     .title{font-size:18px;margin:0}
     nav{display:flex;gap:12px;margin-left:auto}
     nav button{background:transparent;border:1px solid var(--glass);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
-
     .wrap{max-width:1100px;margin:18px auto;padding:18px;display:grid;grid-template-columns:1fr 360px;gap:18px}
-
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:14px;border-radius:12px;border:1px solid var(--glass)}
     .canvas-wrap{display:flex;flex-direction:column;gap:10px}
     canvas{width:100%;height:420px;border-radius:10px;background:linear-gradient(180deg,#021026,#001);display:block}
-
     .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     label{font-size:13px;color:var(--muted)}
     select,input[type=range]{appearance:none;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#08101a;color:var(--muted)}
     button.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;color:#001;padding:8px 12px;border-radius:8px;cursor:pointer}
-
     .aside{display:flex;flex-direction:column;gap:12px}
     .thumb{height:180px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#071022}
     .thumb img{width:100%;height:100%;object-fit:cover}
-
     .pixel-row{display:flex;gap:8px;align-items:center}
     .pixel-grid{display:grid;grid-template-columns:repeat(12,12px);grid-auto-rows:12px;gap:2px;padding:8px;background:#020217;border-radius:6px}
     .px{width:12px;height:12px;border-radius:2px;opacity:.08}
     .px.on{opacity:1;background:var(--accent);box-shadow:0 0 6px rgba(102,102,255,0.35)}
-
     pre{background:rgba(0,0,0,0.25);padding:10px;border-radius:8px;overflow:auto}
     footer{text-align:center;color:var(--muted);margin-top:12px}
-
     @media (max-width:1040px){.wrap{grid-template-columns:1fr}canvas{height:300px}}
   </style>
 </head>
@@ -68,10 +61,8 @@
             <option value="divergent">Divergente (cóncava)</option>
           </select>
         </label>
-
         <label>F (px): <input id="fRange" type="range" min="60" max="300" value="140"></label>
         <label>d_o (px): <input id="doRange" type="range" min="60" max="700" value="320"></label>
-
         <label><input id="showLabels" type="checkbox" checked> Mostrar etiquetas</label>
         <button id="toggleAnim" class="primary">Iniciar animación</button>
         <button id="resetBtn">Reset</button>
@@ -81,7 +72,7 @@
         <div style="flex:1" class="panel" id="infoPanel">Resultados: <span id="resText">—</span></div>
         <div style="width:260px" class="panel">
           <strong>Instrucciones</strong>
-          <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Usa los controles para cambiar la lente y las distancias. Presiona espacio para iniciar/detener la animación. El simulador usa aproximación de lente delgada.</p>
+          <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Usa los controles para cambiar la lente y las distancias. Presiona espacio para iniciar/detener la animación.</p>
         </div>
       </div>
     </section>
@@ -92,7 +83,7 @@
         <div class="thumb">
           <img src="a4af1a2d54ac35da1c982f0b8ca390506bfeb7c8.webp" alt="Tipos de lentes">
         </div>
-        <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Las lentes delgadas se clasifican en convergentes y divergentes. Las convergentes enfocan rayos paralelos a un punto; las divergentes los dispersan.</p>
+        <p style="color:var(--muted);font-size:13px;margin:6px 0 0">Las lentes delgadas se clasifican en convergentes y divergentes. Las convergentes enfocan rayos paralelos; las divergentes los dispersan.</p>
       </div>
 
       <div class="panel">
@@ -122,13 +113,12 @@ Ejemplos:
         </pre>
       </div>
     </aside>
-
   </main>
 
-  <footer style="padding:12px">Optimizado para ser ligero — si tu navegador se queda sin memoria, cierra otras pestañas. Presiona espacio para animar.</footer>
+  <footer style="padding:12px">Simulador optimizado para bajo consumo de recursos.</footer>
 
   <script>
-    // --- Construcción pixel-art pequeña y eficiente (sin cambios) ---
+    // --- Construcción pixel-art (sin cambios) ---
     (function(){
       const conv=[0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0];
       const div=[0,0,1,1,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0];
@@ -140,8 +130,23 @@ Ejemplos:
     const canvas=document.getElementById('scene');
     const ctx=canvas.getContext('2d');
     
-    function fitCanvas(){const dpr=window.devicePixelRatio||1;canvas.width=canvas.clientWidth*dpr;canvas.height=canvas.clientHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0); lastState = {}; /* Forzar redibujo */ }   
-    window.addEventListener('resize', fitCanvas);
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+      };
+    }
+
+    function fitCanvas(){
+      const dpr=window.devicePixelRatio||1;
+      canvas.width=canvas.clientWidth*dpr;
+      canvas.height=canvas.clientHeight*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      lastState = {}; // Forzar redibujo
+    }   
+    window.addEventListener('resize', debounce(fitCanvas, 100));
 
     const lensType=document.getElementById('lensType');
     const fRange=document.getElementById('fRange');
@@ -153,15 +158,11 @@ Ejemplos:
 
     let anim = false;
     let animT = 0;
-    // --- OPTIMIZACIÓN: Almacenar el último estado renderizado ---
-    let lastState = {};
+    let lastState = {}; 
 
     function clear(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
-
-    // Cálculo de lente delgada (sin cambios)
     function computeDi(f, d_o){ const denom=(1/f - 1/d_o); if(Math.abs(denom)<1e-6) return Infinity; return 1/denom; }
 
-    // Dibujar la lente (sin cambios)
     function drawLens(x,type){
       ctx.save();
       ctx.translate(x, canvas.clientHeight/2);
@@ -170,122 +171,76 @@ Ejemplos:
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       if(type==='convergent'){
-        ctx.moveTo(0, -100);
-        ctx.quadraticCurveTo(30, 0, 0, 100);
-        ctx.quadraticCurveTo(-30, 0, 0, -100);
+        ctx.moveTo(0, -100); ctx.quadraticCurveTo(30, 0, 0, 100); ctx.quadraticCurveTo(-30, 0, 0, -100);
       } else {
-        ctx.moveTo(10, -100);
-        ctx.quadraticCurveTo(-20, 0, 10, 100);
-        ctx.moveTo(-10, -100);
-        ctx.quadraticCurveTo(20, 0, -10, 100);
-        ctx.lineTo(10, 100);
+        ctx.moveTo(10, -100); ctx.quadraticCurveTo(-20, 0, 10, 100); ctx.moveTo(-10, -100); ctx.quadraticCurveTo(20, 0, -10, 100); ctx.lineTo(10, 100);
       }
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
+      ctx.fill(); ctx.stroke(); ctx.restore();
     }
     
-    // --- Helper para dibujar rayos (reales y virtuales) ---
     function drawRay(p1, p2, isVirtual) {
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y);
         ctx.setLineDash(isVirtual ? [4, 4] : []);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
+        ctx.lineTo(p2.x, p2.y); ctx.stroke();
     }
 
-    // --- FUNCIÓN DE DIBUJO PRINCIPAL (LÓGICA CORREGIDA) ---
     function draw(state){
       clear();
       const cw=canvas.clientWidth, ch=canvas.clientHeight;
-      const lensX=cw/2;
-      const axisY = ch/2;
-      
+      const lensX=cw/2; const axisY = ch/2;
       const { type, f: fRaw, d_o, labels } = state;
       const signedF = (type==='convergent')? fRaw : -fRaw;
       const d_i = computeDi(signedF, d_o);
       
-      // 1. Eje óptico
       ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.setLineDash([]);
       ctx.beginPath(); ctx.moveTo(0,axisY); ctx.lineTo(cw,axisY); ctx.stroke();
-      
-      // 2. Lente
       drawLens(lensX,type);
       
-      // 3. Objeto
-      const objX = lensX - d_o;
-      const objH = 60;
-      const objTop = axisY - objH;
+      const objX = lensX - d_o; const objH = 60; const objTop = axisY - objH;
       ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.setLineDash([]);
       ctx.beginPath(); ctx.moveTo(objX,axisY); ctx.lineTo(objX,objTop); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(objX-6,objTop+6); ctx.lineTo(objX,objTop); ctx.lineTo(objX+6,objTop+6); ctx.fillStyle='white'; ctx.fill();
       if(labels){ ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='13px Inter'; ctx.fillText('Objeto (o)', objX - 15, objTop-8); }
 
-      // 4. Puntos focales
-      const f1x = lensX - signedF; // Foco objeto
-      const f2x = lensX + signedF; // Foco imagen
+      const f1x = lensX - signedF; const f2x = lensX + signedF;
       if(labels){
           ctx.fillStyle = 'rgba(255, 100, 100, 0.8)'; ctx.font = '12px Inter';
-          ctx.fillText('F', f1x - 5, axisY + 18);
-          ctx.fillText("F'", f2x - 5, axisY + 18);
+          ctx.fillText('F', f1x - 5, axisY + 18); ctx.fillText("F'", f2x - 5, axisY + 18);
       }
 
-      // --- 5. TRAZADO DE RAYOS (CORREGIDO) ---
       ctx.lineWidth=1.6;
-      const objP = {x: objX, y: objTop}; // Punto superior del objeto
+      const objP = {x: objX, y: objTop}; 
 
-      // Rayo 1: Paralelo -> Focal
       ctx.strokeStyle='rgba(255, 200, 80, 0.95)';
-      const p1_lens = {x: lensX, y: objTop}; // Intersección con lente
-      const slope1 = (axisY - objTop) / (f2x - lensX); // Pendiente hacia/desde F'
+      const p1_lens = {x: lensX, y: objTop};
+      const slope1 = (axisY - objTop) / (f2x - lensX);
       const p1_end = {x: cw, y: objTop + slope1 * (cw - lensX)};
-      drawRay(objP, p1_lens, false); // Objeto -> Lente
-      drawRay(p1_lens, p1_end, false); // Lente -> Borde
-      if (type === 'divergent') { // Línea virtual desde F'
-          drawRay(p1_lens, {x: f2x, y: axisY}, true);
-      }
+      drawRay(objP, p1_lens, false); drawRay(p1_lens, p1_end, false);
+      if (type === 'divergent') { drawRay(p1_lens, {x: f2x, y: axisY}, true); }
 
-      // Rayo 2: Central -> Recto
       ctx.strokeStyle='rgba(80, 255, 200, 0.95)';
-      const p2_center = {x: lensX, y: axisY};
       const slope2 = (objTop - axisY) / (objX - lensX);
       const p2_end = {x: cw, y: axisY + slope2 * (cw - lensX)};
       const p2_start = {x: 0, y: axisY + slope2 * (0 - lensX)};
-      drawRay(objP, p2_end, false); // Rayo real
-      drawRay(objP, p2_start, true); // Proyección virtual hacia atrás
+      drawRay(objP, p2_end, false); drawRay(objP, p2_start, true);
 
-      // Rayo 3: Focal -> Paralelo
       ctx.strokeStyle='rgba(255, 100, 255, 0.95)';
       const slope3 = (objTop - axisY) / (objX - f1x);
-      const p3_lens = {x: lensX, y: axisY + slope3 * (lensX - f1x)}; // Intersección con lente
-      const p3_end = {x: cw, y: p3_lens.y}; // Sale paralelo
-      drawRay(objP, p3_lens, false); // Objeto -> Lente
-      drawRay(p3_lens, p3_end, false); // Lente -> Borde
-      if (type === 'convergent') { // Línea virtual desde F
-          drawRay(objP, {x: f1x, y: axisY}, true);
-      }
+      const p3_lens = {x: lensX, y: axisY + slope3 * (lensX - f1x)};
+      const p3_end = {x: cw, y: p3_lens.y};
+      drawRay(objP, p3_lens, false); drawRay(p3_lens, p3_end, false);
+      if (type === 'convergent' && (objX - f1x) !== 0) { drawRay(objP, {x: f1x, y: axisY}, true); }
 
-      // 6. Imagen
       if(isFinite(d_i)){
-        const imgX = lensX + d_i; const A = -d_i/d_o;
-        const imgTop = axisY - (objH * A);
-        const isVirtual = d_i < 0;
-        
+        const imgX = lensX + d_i; const A = -d_i/d_o; const imgTop = axisY - (objH * A); const isVirtual = d_i < 0;
         ctx.strokeStyle = isVirtual ? 'rgba(120,200,255,0.5)' : 'rgba(120,200,255,0.95)';
         ctx.fillStyle = isVirtual ? 'rgba(120,200,255,0.5)' : 'rgba(120,200,255,0.95)';
         ctx.lineWidth=2;
-        
-        drawRay({x: imgX, y: axisY}, {x: imgX, y: imgTop}, isVirtual); // Eje de la imagen
-        
-        // Flecha
-        ctx.setLineDash([]);
-        ctx.beginPath();
-        const arrowDir = (A > 0) ? 6 : -6; // Dirección de la flecha
-        ctx.moveTo(imgX - 6, imgTop + arrowDir);
-        ctx.lineTo(imgX, imgTop);
-        ctx.lineTo(imgX + 6, imgTop + arrowDir);
+        drawRay({x: imgX, y: axisY}, {x: imgX, y: imgTop}, isVirtual);
+        ctx.setLineDash([]); ctx.beginPath();
+        const arrowDir = (A > 0) ? 6 : -6;
+        ctx.moveTo(imgX - 6, imgTop + arrowDir); ctx.lineTo(imgX, imgTop); ctx.lineTo(imgX + 6, imgTop + arrowDir);
         ctx.fill();
-        
         if(labels) ctx.fillText('Imagen (i)', imgX + 8, imgTop + (A > 0 ? -6 : 6) );
         resText.textContent = `d_i = ${d_i.toFixed(1)} px — ${isVirtual? 'virtual' : 'real'} · A=${A.toFixed(2)}`;
       } else {
@@ -293,7 +248,6 @@ Ejemplos:
       }
     }
 
-    // --- OPTIMIZACIÓN: Función para obtener el estado actual de los controles ---
     function getCurrentState() {
         return {
             type: lensType.value,
@@ -303,36 +257,29 @@ Ejemplos:
         };
     }
     
-    // --- OPTIMIZACIÓN: Bucle de renderizado principal ---
     function renderLoop(){
       if(anim){
-        animT += 0.015; // Velocidad de animación
-        const base = 380;
-        const range = 320; // Rango de 60 a 700
+        animT += 0.015;
+        const base = 380; const range = 320;
         doRange.value = base + Math.sin(animT) * range;
       }
       
       const newState = getCurrentState();
       
-      // Compara el estado nuevo con el anterior.
-      // ¡SOLO DIBUJA SI ALGO CAMBIÓ!
       if (newState.type !== lastState.type ||
           newState.f !== lastState.f ||
           newState.d_o !== lastState.d_o ||
           newState.labels !== lastState.labels)
       {
           draw(newState);
-          lastState = newState; // Guarda el estado recién dibujado
+          lastState = newState; 
       }
       
-      requestAnimationFrame(renderLoop); // Continúa el bucle
+      requestAnimationFrame(renderLoop); 
     }
 
-    // --- OPTIMIZACIÓN: Event listeners simplificados ---
-    // Ya no se necesita 'input' para los sliders, el bucle "renderLoop" se encarga.
-    // Los 'change' son para selecciones y checkboxes.
-    lensType.addEventListener('change', () => { lastState = {}; }); // Forzar redibujo
-    showLabels.addEventListener('change', () => { lastState = {}; }); // Forzar redibujo
+    lensType.addEventListener('change', () => { lastState = {}; });
+    showLabels.addEventListener('change', () => { lastState = {}; });
 
     toggleAnim.addEventListener('click', ()=>{
       anim = !anim;
@@ -340,31 +287,25 @@ Ejemplos:
     });
     
     resetBtn.addEventListener('click', ()=>{
-      fRange.value=140;
-      doRange.value=320;
-      lensType.value='convergent';
-      showLabels.checked = true;
-      anim = false;
+      fRange.value=140; doRange.value=320; lensType.value='convergent';
+      showLabels.checked = true; anim = false;
       toggleAnim.textContent = 'Iniciar animación';
-      lastState = {}; // Forzar redibujo
+      lastState = {}; 
     });
 
     window.addEventListener('keydown',(e)=>{
       if(e.code==='Space'){
-        e.preventDefault();
-        anim=!anim;
+        e.preventDefault(); anim=!anim;
         toggleAnim.textContent = anim? 'Parar animación' : 'Iniciar animación';
       }
     });
 
-    // --- Navegación (sin cambios) ---
     document.getElementById('btnIntro').addEventListener('click', ()=>{ window.scrollTo({top:0,behavior:'smooth'}); });
     document.getElementById('btnTipos').addEventListener('click', ()=>{ document.getElementById('tipos').scrollIntoView({behavior:'smooth'}); });
     document.getElementById('btnForm').addEventListener('click', ()=>{ document.getElementById('formulas').scrollIntoView({behavior:'smooth'}); });
 
-    // --- Arranque inicial ---
     fitCanvas();
-    renderLoop(); // Inicia el bucle de renderizado optimizado
+    renderLoop(); 
 
   </script>
 </body>
